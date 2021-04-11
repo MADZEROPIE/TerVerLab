@@ -8,11 +8,11 @@ seed(10)
 import pandas as pd
 import matplotlib.pyplot as plt
 import math
-import statistics
 
-N = 11 #число экспериментов
+N = 10020005 #число экспериментов
 
-lam=float(input("Введите параметр лямбда: "))
+#lam=float(input("Введите параметр лямбда: "))
+lam=2
 
 b=1-1/lam
 #print(b)
@@ -25,14 +25,18 @@ al=1-1/lam
 
 for i in range(N):
     x=random()
-    if(x>b):
-        arr[i]=(-1/lam*math.log(lam*(1-x)))
+    if(x>=b):
+        arr[i]=((-1/lam) * math.log(lam*(1-x)))
+        if(arr[i]<0):
+            print("ERROR")
     else:
         arr[i]=2*math.sqrt(al*x)-2*al
+        if(arr[i]>0):
+            print("ERROR")
       
 arr.sort()
 
-print(arr)
+#print(arr)
 print()
 print()
 
@@ -88,3 +92,86 @@ print()
 #data['|M - x_|'] = abs(M() - x_())
 #data['|D - S2|'] = abs(D() - S2())
 #print(data)
+
+def f(x:float):
+    if(x<0):
+        return x/(2*al)+1
+    else:
+        return math.exp(-lam*x)
+
+
+
+z = [-1,  -0.7,  -0.5, -0.3, -0.15, -0.05, 0.0, 0.01,  0.1, 0.15, 0.16, 0.35,0.3501, 0.45, 0.55, 0.78,0.85, 1.0, 2.0, 3.0, 4, arr[N-1]]
+k = len(z)
+
+z2 = [0]*(k-1)
+li = [0]*(k-1)
+
+for i in range(len(z)-1):
+    z2[i]=(z[i]+z[i+1])/2
+    li[i]=z[i+1]-z[i]
+
+
+#print(z)
+
+bins=[0]*(k-1)
+
+for a in arr:
+    #print(a)
+    for j in range (0, len(z)-1):
+        if (a>z[j]) & (a<=z[j+1]):
+            bins[j]+=1
+            #print(j)
+            break
+
+        
+print(bins)
+print()
+
+bins2=[0]*(k-1)
+for i in range(len(bins)):
+    bins2[i]=bins[i]/(N*li[i])
+
+fnj=[0]*(k-1)
+for i in range (k-1):
+    fnj[i]=f(z2[i])
+
+print(z2)
+print(bins2)
+print(fnj)
+
+plt.figure(figsize=(10, 5))
+plt.step(z2, fnj, label='Theory')
+plt.step(z2, bins2, label='Practice')
+plt.title('Distribution Function')
+plt.legend()
+plt.grid()
+plt.show()
+
+def qj(lb, rb):
+    if lb<-2*b:
+        lb=-2*b
+    if lb<0 & rb>0:
+        return qj(lb,0)+qj(0,rb)
+    if lb < 0:
+        return (rb*rb-lb*lb)/(4*al)+rb-lb
+    else:
+        return (-1/lam)*(math.exp(-lam*rb)-math.exp(-lam*lb))
+
+def R0():
+    ans = 0
+    for i in range(k-1):
+        nqj = bins[i] * qj(z[i], z[i+1])
+        ans += ((N-nqj)**2)/nqj
+    
+
+alf=0.05
+
+masz=0
+for i in arr:
+    if(i>=1.0) & (i<=2.0):
+        masz+=1
+        
+print()
+print(masz/N)
+print(1/2*(math.exp(-2)-math.exp(-4)))
