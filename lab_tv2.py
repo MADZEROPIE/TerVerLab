@@ -9,14 +9,25 @@ from random import random, seed
 import pandas as pd
 import matplotlib.pyplot as plt
 import math
+from datetime import datetime
 
 alf = 0.05
 co=0
+b=0.5
 print("alfa = ", alf)
-for ii in range(20):
-    seed(ii)
+
+def f1(x:float) -> float:
+    if(x>b):
+        return ((-1/lam) * math.log(lam*(1-x)))
+    else:
+        return 2*math.sqrt(al*x)-2*al
     
-    N = 1000009 #число экспериментов
+
+
+for ii in range(20):
+    seed(datetime.now())
+    
+    N = 1000 #число экспериментов
     
     
     lam = 2
@@ -54,8 +65,15 @@ for ii in range(20):
     
     
     z = [-math.inf,  -0.75,  -0.6, -0.375, -0.2,  0.0, 0.125, 0.25, 0.375, 0.6, 0.9, arr[N-1]-3, math.inf] #12
-    k = len(z)
-    bins=[0]*(k-1)
+    k1 = 13
+    z[0]=f1(0)
+    for i in range(1,k1-1):
+        z[i]=f1(i/(k1-1))
+    z[-1]=math.inf
+    print(z)
+    print(arr[-1])
+    
+    bins=[0]*(k1-1)
     
     for a in arr:
         #print(a)
@@ -69,7 +87,7 @@ for ii in range(20):
     
     def R0() -> float:
         ans = 0
-        for i in range(k - 1):
+        for i in range(k1 - 1):
             nqj = N * qj(z[i], z[i+1])
             ans += ((bins[i]-nqj)**2)/nqj
         return ans

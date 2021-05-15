@@ -9,7 +9,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import math
 
-N = 10000009 #число экспериментов
+N = 1000009 #число экспериментов
 
 #lam=float(input("Введите параметр лямбда: "))
 lam=0
